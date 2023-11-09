@@ -1,0 +1,15 @@
+.loginOuterDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #8500ff;
+  width: fit-content;
+  padding: 20px;
+  margin: 20px;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}

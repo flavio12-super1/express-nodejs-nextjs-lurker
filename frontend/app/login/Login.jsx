@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import "./Login.css";
 import Link from "next/link";
+import "../styles/globalForm.css";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Login = () => {
 
   return (
     <div>
-      <div className="loginOuterDiv">
+      <div className="innerFormDiv">
         <form onSubmit={handleSubmit}>
           <div className="formSection">
             <label>username</label>

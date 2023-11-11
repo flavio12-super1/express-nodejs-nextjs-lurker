@@ -2,6 +2,8 @@
 import { useState } from "react";
 import axios from "axios";
 import "./Register.css";
+import "../styles/globalForm.css";
+import Link from "next/link";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -36,37 +38,46 @@ const Register = () => {
   };
 
   return (
-    <div className="registerOuterDiv">
-      <form onSubmit={handleSubmit}>
-        <div className="formSection">
-          <label>username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-          />
+    <div>
+      <div className="innerFormDiv">
+        <form onSubmit={handleSubmit}>
+          <div className="formSection">
+            <label>username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="formSection">
+            <label>password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="formSection">
+            <label>email</label>
+            <input
+              type="text"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <div className="linkDiv">
+        <div className="innerLinkDiv">
+          <Link href="/login">
+            <a>login</a>
+          </Link>
         </div>
-        <div className="formSection">
-          <label>password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="formSection">
-          <label>email</label>
-          <input
-            type="text"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
+      </div>
     </div>
   );
 };

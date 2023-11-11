@@ -1,10 +1,10 @@
 import React from "react";
-import Lurker from "./components/Lurker";
+import Register from "./Register";
 
 export default function Home() {
   return (
     <div>
-      <Lurker />
+      <Register />
     </div>
   );
 }

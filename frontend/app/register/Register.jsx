@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
-import "../../styles/Login.css";
+import "./Register.css";
 
-const Login = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    email: "",
   });
 
   const handleInputChange = (e) => {
@@ -22,7 +23,10 @@ const Login = () => {
 
     try {
       console.log("formData", formData);
-      const response = await axios.post("/login", formData);
+      const response = await axios.post(
+        "http://localhost:8000/register",
+        formData
+      );
       // Handle the response here, e.g., display a success message or redirect to another page.
       console.log("Post request successful:", response.data);
     } catch (error) {
@@ -32,7 +36,7 @@ const Login = () => {
   };
 
   return (
-    <div className="loginOuterDiv">
+    <div className="registerOuterDiv">
       <form onSubmit={handleSubmit}>
         <div className="formSection">
           <label>username</label>
@@ -52,10 +56,19 @@ const Login = () => {
             onChange={handleInputChange}
           />
         </div>
+        <div className="formSection">
+          <label>email</label>
+          <input
+            type="text"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+        </div>
         <button type="submit">Submit</button>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Register;

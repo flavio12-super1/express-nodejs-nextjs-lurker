@@ -1,0 +1,22 @@
+.loginOuterDiv {
+  background-color: #8500ff;
+  padding: 20px;
+  margin: 20px;
+  width: 300px;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+.linkDiv {
+  padding: 20px;
+  margin: 20px;
+  background-color: rebeccapurple;
+  color: white;
+  width: 300px;
+  text-decoration: underline;
+}
+.innerLinkDiv {
+}

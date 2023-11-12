@@ -30,9 +30,11 @@ const Login = () => {
       );
       // Handle the response here, e.g., display a success message or redirect to another page.
       console.log("Post request successful:", response.data);
+      window.location.href = "/";
     } catch (error) {
       // Handle errors, e.g., show an error message.
       console.error("Error making the POST request:", error);
+      alert(error.response.data.error);
     }
   };
 
@@ -58,7 +60,9 @@ const Login = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button type="submit">Submit</button>
+          <button type="submit" className="submitButton">
+            Submit
+          </button>
         </form>
       </div>
 

@@ -19,12 +19,7 @@ const mdb = mongoose.connection;
 mdb.on("error", (error) => console.error(error));
 mdb.once("open", () => console.log("Connected to Mongoose"));
 
-const saveVideo = require("./routes/saveVideo");
-app.use("/saveVideo", saveVideo);
-const register = require("./routes/register");
-app.use("/register", register);
-const login = require("./routes/login");
-app.use("/login", login);
+const tokenBlacklist = require("./routes/tokenBlackList.js");
 
 const verifyJWT = (req, res, next) => {
   console.log("Verifying JWT");
@@ -34,14 +29,33 @@ const verifyJWT = (req, res, next) => {
     return res.redirect("/login");
   }
 
+  // Check if the token is in the blacklist
+  if (tokenBlacklist.includes(token)) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Token revoked. Please log in again." });
+  }
+
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log(decoded);
+    console.log(decoded.id);
+    res.locals.userId = decoded.id;
     next();
   } catch (error) {
     res.status(401).json({ success: false, message: "Unauthorized" });
   }
 };
+
+const register = require("./routes/register");
+app.use("/register", register);
+const login = require("./routes/login");
+app.use("/login", login);
+const logout = require("./routes/logout");
+app.use("/logout", verifyJWT, logout);
+const user = require("./routes/user");
+app.use("/user", verifyJWT, user);
+const verify = require("./routes/verify");
+app.use("/verify", verify);
 
 app.use(
   express.static(path.resolve(__dirname, "../frontend/out/"), { index: false })

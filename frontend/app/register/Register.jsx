@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./Register.css";
 import "../styles/globalForm.css";
 import Link from "next/link";
+import AlertBox from "../alertBox/AlertBox";
 
 const Register = () => {
   const [code, setCode] = useState("");
@@ -13,6 +14,11 @@ const Register = () => {
     password: "",
     email: "",
   });
+
+  const [showAlert, setShowAlert] = useState(false);
+
+  const usernameInputRef = useRef(null);
+  const alertBox = useRef(null);
 
   //validate password:
   const validateUsername = (username) => {
@@ -70,6 +76,33 @@ const Register = () => {
     );
   };
 
+  const handleUserNameInputClick = () => {
+    // Show alert when the input is clicked
+    setShowAlert(true);
+  };
+
+  const handleClickOutsideInput = (event) => {
+    // Check if the click occurred outside the input field
+    if (
+      usernameInputRef.current &&
+      !usernameInputRef.current.contains(event.target) &&
+      alertBox.current &&
+      !alertBox.current.contains(event.target)
+    ) {
+      setShowAlert(false);
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for clicks on the document body
+    document.body.addEventListener("click", handleClickOutsideInput);
+
+    // Cleanup: remove event listener on component unmount
+    return () => {
+      document.body.removeEventListener("click", handleClickOutsideInput);
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -109,15 +142,30 @@ const Register = () => {
   return (
     <div>
       <div className="innerFormDiv">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autocomplete="off">
           <div className="formSection">
             <label>username</label>
             <input
-              type="text"
+              type="search"
               name="username"
               value={formData.username}
+              onClick={() => handleUserNameInputClick()}
               onChange={handleUserNameChange}
+              ref={usernameInputRef}
             />
+            {showAlert &&
+            formData.username.length > 0 &&
+            !validateUsername(formData.username) ? (
+              <div style={{ position: "relative" }}>
+                <div ref={alertBox}>
+                  <AlertBox
+                    errorMessage={
+                      "Username must be between 6 and 24 characters long"
+                    }
+                  />
+                </div>
+              </div>
+            ) : null}
           </div>
           <div className="formSection">
             <label>password</label>

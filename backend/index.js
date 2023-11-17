@@ -74,6 +74,10 @@ app.get("/register", (req, res) => {
   console.log("sending register.html");
   res.sendFile(path.join(__dirname, "../frontend/out/", "register.html"));
 });
+app.get("/test", (req, res) => {
+  console.log("sending test.html");
+  res.sendFile(path.join(__dirname, "../frontend/out/", "test.html"));
+});
 
 // Define a route that responds to the root URL
 app.get("/ping", (req, res) => {

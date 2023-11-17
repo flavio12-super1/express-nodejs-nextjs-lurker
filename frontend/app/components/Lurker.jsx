@@ -1,6 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:8000", {
+  withCredentials: true, // This is important to include cookies with the WebSocket handshake
+});
 
 function Lurker() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -44,6 +49,25 @@ function Lurker() {
 
   useEffect(() => {
     getUser();
+
+    socket.on("connect", () => {
+      console.log("socket is connected");
+    });
+    socket.on("disconnect", (reason) => {
+      console.log("socket is disconnected: " + reason);
+    });
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+    socket.on("user-connected", (data) => {
+      console.log(data);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("user-connected");
+    };
   }, []);
   return (
     <div>

@@ -4,10 +4,10 @@ const User = require("../models/userSchema");
 
 router.post("/", async (req, res) => {
   const { username, password, email, code } = req.body;
-  console.log("verifying code");
-  console.log(username, password, email, code);
+  // console.log("verifying code");
+  // console.log(username, password, email, code);
   const user = await User.findOne({ email: email });
-  console.log(user);
+  // console.log(user);
   if (user.code === code) {
     console.log("code verified");
     user.isVerified = true;

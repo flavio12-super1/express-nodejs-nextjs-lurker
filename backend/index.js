@@ -1,14 +1,33 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const app = express();
-require("dotenv").config();
+
+const http = require("http");
 const path = require("path");
+const cors = require("cors");
+const { Server } = require("socket.io");
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:8000",
+    credentials: true,
+  },
+});
+require("dotenv").config();
+
 const port = process.env.PORT || 8000; // You can choose any available port
 const dburl = process.env.DBURL;
 const JWT_SECRET = process.env.JWT_SECRET;
-const cors = require("cors");
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:8000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -22,7 +41,7 @@ mdb.once("open", () => console.log("Connected to Mongoose"));
 const tokenBlacklist = require("./routes/tokenBlackList.js");
 
 const verifyJWT = (req, res, next) => {
-  console.log("Verifying JWT");
+  console.log("Verifying JWT...");
   const token = req.cookies.token;
 
   if (!token) {
@@ -38,13 +57,48 @@ const verifyJWT = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log(decoded.id);
+    // console.log(decoded.id);
     res.locals.userId = decoded.id;
     next();
   } catch (error) {
     res.status(401).json({ success: false, message: "Unauthorized" });
   }
 };
+
+const authenticateSocket = (socket, next) => {
+  const token = socket.handshake.headers.cookie
+    ?.split("; ")
+    .find((row) => row.startsWith("token="))
+    ?.split("=")[1];
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      // console.log("decoded id: " + decoded.id);
+      socket.userId = decoded.id;
+      next();
+    } catch (err) {
+      next(new Error("invalid_token"));
+    }
+  } else {
+    next(new Error("unauthorized"));
+  }
+};
+
+io.use((socket, next) => {
+  // Socket.IO middleware
+  authenticateSocket(socket, next);
+});
+
+io.on("connection", (socket) => {
+  socket.join(socket.userId);
+  console.log(`User ${socket.userId} connected`);
+  io.to(socket.userId).emit("user-connected", "hello user");
+  socket.on("disconnect", () => {
+    console.log(`User ${socket.userId} disconnected`);
+    socket.leaveAll();
+  });
+});
 
 const register = require("./routes/register");
 app.use("/register", register);
@@ -66,6 +120,11 @@ app.get("/", verifyJWT, (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/out/", "index.html"));
 });
 
+app.get("/search", verifyJWT, (req, res) => {
+  console.log("sending index.html");
+  res.sendFile(path.join(__dirname, "../frontend/out/", "search.html"));
+});
+
 app.get("/login", (req, res) => {
   console.log("sending login.html");
   res.sendFile(path.join(__dirname, "../frontend/out/", "login.html"));
@@ -85,6 +144,6 @@ app.get("/ping", (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

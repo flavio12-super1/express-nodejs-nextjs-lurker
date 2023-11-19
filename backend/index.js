@@ -55,7 +55,7 @@ app.get("/", verifyJWT, (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/out/", "index.html"));
 });
 app.get("/search", verifyJWT, (req, res) => {
-  console.log("sending index.html");
+  console.log("sending search.html");
   res.sendFile(path.join(__dirname, "../frontend/out/", "search.html"));
 });
 app.get("/login", (req, res) => {

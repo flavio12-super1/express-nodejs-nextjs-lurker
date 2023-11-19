@@ -1,15 +1,31 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
+
+type User = {
+  userInfo: {
+    username: string;
+    email: string;
+  };
+};
 
 const socket = io("http://localhost:8000", {
   withCredentials: true, // This is important to include cookies with the WebSocket handshake
 });
 
-function Lurker() {
+export const LurkerContext = createContext<
+  | {
+      user: User | null | undefined;
+      socket: typeof socket;
+      logout: () => Promise<void>;
+    }
+  | undefined
+>(undefined);
+
+function Lurker({ children }: { children: React.ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>();
   const logout = async () => {
     try {
       const response = await axios.post("/logout", {
@@ -74,15 +90,12 @@ function Lurker() {
       <div>Home</div>
       {isLoaded ? (
         <div>
-          <div>username: {user.userInfo.username}</div>
-          <div>email: {user.userInfo.email}</div>
-
-          <div>
-            <button onClick={() => logout()}>log out</button>
-          </div>
+          <LurkerContext.Provider value={{ user, socket, logout }}>
+            {children}
+          </LurkerContext.Provider>
         </div>
       ) : (
-        <div>loading user info...</div>
+        <div>loading...</div>
       )}
     </div>
   );

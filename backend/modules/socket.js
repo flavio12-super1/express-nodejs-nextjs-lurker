@@ -41,6 +41,9 @@ const initializeSocket = (server) => {
       console.log(`User ${socket.userId} disconnected`);
       socket.leaveAll();
     });
+    socket.on("ping", (data) => {
+      console.log(data.data);
+    });
   });
 
   return io;

@@ -7,6 +7,7 @@ const verifyJWT = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
+    console.log("No token found");
     return res.redirect("/login");
   }
 
@@ -19,11 +20,11 @@ const verifyJWT = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // console.log(decoded.id);
     res.locals.userId = decoded.id;
     next();
   } catch (error) {
-    res.status(401).json({ success: false, message: "Unauthorized" });
+    console.log(error);
+    return res.redirect("/login");
   }
 };
 

@@ -1,0 +1,9 @@
+.navIcons {
+  background-color: #484fa9;
+  border: solid;
+  border-radius: 15px;
+  cursor: pointer;
+  display: block;
+  height: 55px;
+  width: 55px;
+}

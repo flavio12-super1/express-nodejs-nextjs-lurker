@@ -48,6 +48,7 @@ app.use("/login", login);
 app.use(
   express.static(path.resolve(__dirname, "../frontend/out/"), { index: false })
 );
+app.use(express.static(path.resolve(__dirname, "./lurker-icons")));
 
 //Routes
 app.get("/", verifyJWT, (req, res) => {

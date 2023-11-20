@@ -2,6 +2,8 @@
 import React, { useEffect, useState, createContext } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
+import NavBar from "../components/navbar/Navbar";
+import "./Lurker.css";
 
 type User = {
   userInfo: {
@@ -86,8 +88,8 @@ function Lurker({ children }: { children: React.ReactNode }) {
     };
   }, []);
   return (
-    <div>
-      <div>Home</div>
+    <div className="home">
+      <NavBar />
       {isLoaded ? (
         <div>
           <LurkerContext.Provider value={{ user, socket, logout }}>

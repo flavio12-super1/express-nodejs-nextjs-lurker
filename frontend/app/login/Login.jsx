@@ -30,7 +30,7 @@ const Login = () => {
       );
       // Handle the response here, e.g., display a success message or redirect to another page.
       console.log("Post request successful:", response.data);
-      window.location.href = "/";
+      window.location.href = "/app";
     } catch (error) {
       // Handle errors, e.g., show an error message.
       console.error("Error making the POST request:", error);

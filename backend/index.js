@@ -55,9 +55,17 @@ app.get("/", verifyJWT, (req, res) => {
   console.log("sending index.html");
   res.sendFile(path.join(__dirname, "../frontend/out/", "index.html"));
 });
-app.get("/search", verifyJWT, (req, res) => {
+app.get("/app", verifyJWT, (req, res) => {
   console.log("sending search.html");
-  res.sendFile(path.join(__dirname, "../frontend/out/", "search.html"));
+  res.sendFile(path.join(__dirname, "../frontend/out/", "app.html"));
+});
+app.get("/app/search", verifyJWT, (req, res) => {
+  console.log("sending search.html");
+  res.sendFile(path.join(__dirname, "../frontend/out/app/", "search.html"));
+});
+app.get("/app/:email", verifyJWT, (req, res) => {
+  console.log("sending search.html");
+  res.sendFile(path.join(__dirname, "../frontend/out/app/", "user.html"));
 });
 app.get("/login", (req, res) => {
   console.log("sending login.html");
@@ -67,12 +75,20 @@ app.get("/register", (req, res) => {
   console.log("sending register.html");
   res.sendFile(path.join(__dirname, "../frontend/out/", "register.html"));
 });
-app.get("/test", (req, res) => {
-  console.log("sending test.html");
-  res.sendFile(path.join(__dirname, "../frontend/out/", "test.html"));
-});
-app.get("/ping", (req, res) => {
-  res.send("Hello, World!");
+// app.get("/app/:user", (req, res) => {
+//   // res.send({ message: "Hello, World!" });
+//   console.log("pinged");
+// });
+
+app.get("/getUser", (req, res) => {
+  // Replace this with your actual logic to fetch user data from a database or other source
+  const userData = [
+    { id: 1, name: "User 1" },
+    { id: 2, name: "User 2" },
+    { id: 3, name: "User 3" },
+  ];
+
+  res.json(userData);
 });
 
 // Start the server
